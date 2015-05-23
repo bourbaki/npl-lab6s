@@ -28,7 +28,7 @@ def get_all(method, args, limit=1000):
         r_ofs = list((i + 1) * limit for i in range(r_n)) # offsets
         r_params = list(dict(offset=of, count=limit, **args) for of in r_ofs) # parameters for requests
         items.extend(item for p in r_params for item in api(method, p)[ITEMS_KEY]) # add remainder
-    assert len(items) == api(method, dict(offset=0, count=0, **args))['count']
+    # assert len(items) == api(method, dict(offset=0, count=0, **args))['count']
     return items
 
 # wrappers for basic methods
