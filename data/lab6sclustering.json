@@ -1,0 +1,1 @@
+{"modularity_4-cores": 0.02067605330639884, "num_4-cores": 3, "wcc_4-cores": 0.0007715195805451026, "modularity_max-cores": 0.009619247354253891, "wcc_max-cores": 0.2296878108830443, "max_core": 34, "louvain_steps": [53614, 49239, 48983, 48978]}
