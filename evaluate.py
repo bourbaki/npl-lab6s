@@ -41,7 +41,7 @@ print("Computing wcc...")
 wcc_max_core = cm.wcc(max_core_communities[0], G)
 print(">> max-core wcc: {}".format(wcc_max_core))
 wcc_four_core = cm.wcc(four_cores_communities[0], G)
-print(">> 4-core wcc: {}".format(wcc_four_core))
+print(">> 4-core wcc: {} size: {}".format(wcc_four_core, four_cores_communities[0].number_of_nodes()))
 
 print("Computing louvain...")
 dendo = generate_dendogram(G)
