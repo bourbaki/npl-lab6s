@@ -23,24 +23,27 @@ def modularity(G, sbunch):
     """compute modularity for the partition inside graph"""
     return sum(community_modularity(G, s) for s in sbunch)
     
-def triangle_nodes(G, node, exclude=None):
+def triangle_nodes(G, node, nodeset=None):
     """return triangle nodes iterator"""
-    is_in_exclude = lambda x: (x in exclude) if exclude else False 
-    return (nb for nb in G.neighbors_iter(node) if have_common_neighbor(G, node, nb) and not is_in_exclude(nb))
+    if nodeset:
+        nbrs = (nb for nb in G.neighbors_iter(node) if nb in nodeset)
+    else:
+        nbrs = G.neighbors_iter(node)
+    return (nb for nb in nbrs if have_common_neighbor(G, node, nb))
     
-def number_of_triangle_nodes(G, node, exclude=None):
+def number_of_triangle_nodes(G, node, nodeset=None):
     """docstring for number_of_triangle_nodes"""
-    return len(list(triangle_nodes(G, node, exclude=exclude)))
+    return len(list(triangle_nodes(G, node, nodeset=nodeset)))
     
 def node_wcc(x, S, V):
-    # tS, tV = nx.triangles(S, x), nx.triangles(V, x)
-    # vtS, vtV = number_of_triangle_nodes(S, x), number_of_triangle_nodes(V, x)
-    # vtV_S = number_of_triangle_nodes(V, x, exclude=S)
-    tV,vtV,nbV = clique_tr(V, x)
-    tS,vtS,nbS = clique_tr(S, x)
-    vtV_S = nbV - nbS
+    tS, tV = nx.triangles(S, x), nx.triangles(V, x)
+    vtS, vtV = number_of_triangle_nodes(S, x), number_of_triangle_nodes(V, x)
+    vtV_S = vtV - vtS
+    # tV,vtV,nbV = clique_tr(V, x)
+    # tS,vtS,nbS = clique_tr(S, x)
+    # vtV_S = nbV - nbS
     result = 0.0 if tV == 0 else tS / tV * vtV / (S.number_of_nodes() - 1 + vtV_S)
-    # print("node: {0}, tS: {1}, tV: {2}, vtS: {3}, vtV: {4}, vtV_S: {5} wcc: {6}".format(x, tS, tV, vtS, vtV, vtV_S, result))
+    print("node: {}, tS: {}, tV: {}, vtS: {}, vtV: {}, vtV_S: {} wcc: {}".format(x, tS, tV, vtS, vtV, vtV_S, result))
     return result
     
 def wcc(S, V):
@@ -69,3 +72,6 @@ def old_wcc(S, V):
         if tV != 0:
             wcc0 += (tS*1./tV) * (vtV/(num_nodes_gr-1+vtV_S))
     return wcc0 / num_nodes_gr
+
+def new_clique(G, x):
+    return (nx.triangles(G, x), number_of_triangle_nodes(G, x), G.degree(x))
